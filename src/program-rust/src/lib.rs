@@ -92,7 +92,22 @@ mod test {
             false,
             Epoch::default(),
         );
-        let instruction_data: Vec<u8> = Vec::new();
+
+        // 0 - Increment
+        // 1 - Decrement
+        // 2 - Set
+        // 1-4 -> u32
+        // [2, 100, 0, 0, 0 ]
+        let arr = u32::to_le_bytes(100);
+        let mut instruction_data = [2;5];
+        for i in 0..4 {
+            instruction_data[i+1] = arr[i];
+        }
+        let accounts = vec![account];
+
+
+
+        // let instruction_data: Vec<u8> = Vec::new();
 
         let accounts = vec![account];
 
@@ -107,8 +122,9 @@ mod test {
             GreetingAccount::try_from_slice(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
-            1
+            100
         );
+        let mut instruction_data = [0;5];
         process_instruction(&program_id, &accounts, &instruction_data).unwrap();
         assert_eq!(
             GreetingAccount::try_from_slice(&accounts[0].data.borrow())
